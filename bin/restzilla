@@ -1,0 +1,42 @@
+#!/usr/bin/env node
+
+var Restzilla = require('../src/')
+var paramon = require('paramon')
+
+var args = paramon.readFormat(process.argv, {
+	name: 'restzilla',
+	usage: 'command [options]',
+
+	params: [{
+		name: 'debug',
+		args: ['--debug', '-d'],
+		desc: 'Run in debug mode (more verbose error messages).',
+		maxParams: 0
+	},
+	{
+		name: 'port',
+		args: ['--port', '-p'],
+		desc: 'Port to listen to.',
+		minParams: 1,
+		maxParams: -1
+	},
+	{
+		name: 'baseurl',
+		args: ['--base-url', '-u'],
+		desc: 'The base URL of bugzilla.',
+		minParams: 1,
+		maxParams: -1
+	}]
+})
+
+if (!args.baseurl) {
+	console.error('ERROR: No base URL specified.')
+	console.error('try `restzilla --help` for help.')
+	process.exit(1)
+}
+
+var restzilla = new Restzilla({
+	baseURL: args.baseurl
+})
+
+restzilla.listen(args.port || 8000)
